@@ -6,20 +6,24 @@ import {
   InputLabel,
   OutlinedInput,
   InputAdornment,
+  Button, Typography, Snackbar,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
+import { Link } from "react-router-dom";
 
-function Register() {
+export default function Register() {
   // UseStates
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    confirmpassword: "",
     role: "",
   });
+
+  const [showSnackbar, setShowSnackbar] = useState(false);
 
   const [showPassword, setShowPassword] = React.useState(false);
 
@@ -33,7 +37,16 @@ function Register() {
     event.preventDefault();
   };
 
-  const handleSubmit = (e) => {};
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(formData);
+    setShowSnackbar(true);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
+  }
 
   return (
     <>
@@ -43,38 +56,49 @@ function Register() {
       >
         <Container
           maxWidth="sm"
-          className="bg-white rounded-lg bg-opacity-90 w-[1000px] h-[700px]"
+          className="bg-white rounded-lg bg-opacity-90 w-[900px] h-[500px]"
+          style={{ alignItems: "center" }}
         >
           <h1
             className="mb-4 text-center"
             style={{ fontSize: "34px", fontFamily: "Poppins" }}
           >
-            Register
+            Sign Up
           </h1>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="flex flex-col items-center">
             <TextField
               required
-              id="outlined-required"
+              autoFocus
+              id="name"
               label="Name"
-              className="w-full mb-4"
+              name="name"
+              className="w-1/2 mb-3"
+              value={formData.name}
+              onChange={handleChange}
             />
-            <br />
             <br />
             <TextField
               required
-              id="outlined-required"
+              id="email"
               label="Email"
-              className="w-full mb-4"
+              name="email"
+              autoComplete="email"
+              className="w-1/2 mb-3"
+              value={formData.email}
+              onChange={handleChange}
             />
             <br />
-            <br />
-            <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
+            <FormControl variant="outlined" className="w-1/2 mb-3">
               <InputLabel htmlFor="outlined-adornment-password">
-                Password
+                Password *
               </InputLabel>
               <OutlinedInput
-                id="outlined-adornment-password"
+                  id="password"
+                  name="password"
+                required
                 type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -95,10 +119,45 @@ function Register() {
                 label="Password"
               />
             </FormControl>
+            <br />
+            <TextField
+              required
+              id="role"
+              label="Role"
+              className="w-1/2 mb-3"
+              value={formData.role}
+              onChange={handleChange}
+            />
+            <br />
+            <Link to='/login'>
+              <Button
+                variant="contained"
+                className="mt-2"
+                sx={{ py: 1 }}
+                fullWidth
+              >
+                Sign Up
+              </Button>
+            </Link>
           </form>
+          <br />
+          <Typography variant="body2" align="center" className="mt-2" style={{ fontFamily: 'Poppins' }}>
+           Already have an Account?
+            <br/>
+            <Link to="/login" className="text-primary" style={{ color: "blue" }}>
+              {" "}
+              Sign In
+            </Link>
+          </Typography>
         </Container>
+        <Snackbar
+            open={showSnackbar}
+            autoHideDuration={4000}
+            message="Please fill in all the fields"
+            className="fixed bottom-0 right-0 mb-8 mr-8"
+            onClose={() => setShowSnackbar(false)}
+        />
       </div>
     </>
   );
 }
-export default Register;
