@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const SignUp = require('../model/signup.model'); // assuming signup stores users
+const SignIn = require('../model/signup.model'); // assuming signup stores users
 const express = require('express')
 const app = express();
 const router = express.Router()
@@ -12,7 +12,7 @@ router.post('/signin', async (req, res) => {
         const { email, password } = req.body;
 
         // Find user
-        const user = await SignUp.findOne({ email });
+        const user = await SignIn.findOne({ email });
         if (!user) {
             return res.status(400).send('Invalid email or password');
         }
