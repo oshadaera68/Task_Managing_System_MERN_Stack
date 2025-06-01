@@ -3,7 +3,7 @@ import React from 'react'
 export default function CrudPage() {
   return (
     <div>
-      crudpage
+      <h1>Crud Page</h1>
     </div>
   )
 }
