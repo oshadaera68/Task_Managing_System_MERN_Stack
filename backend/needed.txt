@@ -1,2 +1,0 @@
-password = afDvo5eC4nZ4zyls
-string = mongodb+srv://taskManager:afDvo5eC4nZ4zyls@cluster0.kyd1ot5.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
