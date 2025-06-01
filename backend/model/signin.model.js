@@ -5,7 +5,7 @@
 
 const mongoose = require('mongoose');
 
-const signinSchema = new mongoose.Schema({
+const signInSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
@@ -17,4 +17,4 @@ const signinSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Signin', signinSchema);
+module.exports = mongoose.model('SignIn', signInSchema);
