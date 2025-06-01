@@ -3,10 +3,12 @@
  *Version: v0.1.0
  **/
 
+// routes/task.js
 const express = require('express');
-const app = express();
 const router = express.Router();
 const Task = require('../model/task.model');
+const authenticate = require('../middleware/authenticate');
+const app = express();
 
 app.use(express.json());
 
@@ -19,53 +21,60 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/task', async (req, res) => {
+// CREATE task — requires login
+router.post('/task', authenticate, async (req, res) => {
     const task = new Task({
         title: req.body.title,
         description: req.body.description,
         priority: req.body.priority,
         status: req.body.status,
         dueDate: req.body.dueDate,
-        createdBy: req.body.createdBy
+        createdBy: req.user.userId // token gives this
     });
 
     try {
         const savedTask = await task.save();
-        res.json(savedTask);
-        res.status(200).json({message: 'Item added successfully'});
+        res.status(201).json(savedTask);
     } catch (err) {
-        res.status(400).json({error: 'Error adding item'});
+        res.status(400).json({ error: 'Error adding task' });
     }
 });
 
-router.put('/:id', async (req, res) => {
+// UPDATE task — only owner can modify
+router.put('/:id', authenticate, async (req, res) => {
     try {
         const task = await Task.findById(req.params.id);
-        if (!task) {
-            return res.status(404).json({error: 'Task not found'});
+        if (!task) return res.status(404).json({ error: 'Task not found' });
+
+        if (task.createdBy.toString() !== req.user.userId) {
+            return res.status(403).json({ error: 'You can only edit your own tasks' });
         }
+
         task.title = req.body.title;
         task.description = req.body.description;
         task.priority = req.body.priority;
         task.status = req.body.status;
         task.dueDate = req.body.dueDate;
-        task.createdBy = req.body.createdBy;
+
         const updatedTask = await task.save();
         res.json(updatedTask);
     } catch (err) {
-        res.status(500).json({error: 'Error updating task'});
+        res.status(500).json({ error: 'Error updating task' });
     }
 });
 
-router.delete('/:id', async (req, res) => {
+// DELETE task — only owner can delete
+router.delete('/:id', authenticate, async (req, res) => {
     try {
         const task = await Task.findById(req.params.id);
-        if (!item) {
-            return res.status(404).json({ error: 'Task not found' });
+        if (!task) return res.status(404).json({ error: 'Task not found' });
+
+        if (task.createdBy.toString() !== req.user.userId) {
+            return res.status(403).json({ error: 'You can only delete your own tasks' });
         }
 
-        const response = await task.remove();
-        res.json(response);
+        await task.remove();
+        res.json({ message: 'Task deleted successfully' });
     } catch (err) {
         res.status(500).json({ error: 'Error deleting task' });
     }

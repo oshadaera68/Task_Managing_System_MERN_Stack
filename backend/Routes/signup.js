@@ -1,10 +1,9 @@
 const bcrypt = require('bcryptjs');
 const SignUp = require('../model/signup.model');
-const {Router} = require("express");
+const { Router } = require("express");
 const router = Router();
 
-
-router.post('/signup', async (req, res) => {
+router.post('/', async (req, res) => {  // <-- use '/' here
     try {
         const { name, email, password, role } = req.body;
 

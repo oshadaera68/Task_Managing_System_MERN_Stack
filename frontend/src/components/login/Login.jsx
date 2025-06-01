@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import wallpaper from "../../assets/login.jpg";
 import {Button, Container, Snackbar, TextField, Typography} from "@mui/material";
 import {Link} from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
 
@@ -9,9 +10,25 @@ export default function Login() {
     const [password, setPassword] = useState("");
     const [isError, setIsError] = useState(false);
 
-    const handleSubmit = () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
 
-    }
+        if (!email || !password) {
+            setIsError(true);
+        } else {
+            try {
+                const response = await axios.post("https://localhost:4000/signin", {
+                    email,
+                    password,
+                });
+                console.log("Logged in successfully!");
+                console.log("User token:", response.data.token);
+            } catch (error) {
+                console.error("Error while logging in:", error.message);
+                setIsError(true);
+            }
+        }
+    };
 
     const handleCloseSnackbar = () => {
         setIsError(false);
