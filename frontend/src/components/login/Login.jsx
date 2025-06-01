@@ -29,6 +29,7 @@ export default function Login() {
                 <form onSubmit={handleSubmit}>
                     <TextField
                         required
+                        autoFocus
                         id="email"
                         label="Email"
                         name="email"
@@ -51,7 +52,7 @@ export default function Login() {
                     />
                     <br/>
                     <br/>
-                    <Link to='/'>
+                    <Link to='/dashboard'>
                         <Button variant="contained" type="submit" color="primary">Login</Button>
                     </Link>
                 </form>
