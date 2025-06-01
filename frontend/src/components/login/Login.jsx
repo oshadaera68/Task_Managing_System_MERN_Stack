@@ -19,7 +19,7 @@ export default function Login() {
 
     return (<div className='flex items-center justify-center min-h-screen bg-cover bg-center bg-no-repeat bg-black/50'
                  style={{backgroundImage: `url(${wallpaper})`}}>
-            <Container maxWidth="sm" className="bg-white bg-opacity-80 rounded-lg p-8 text-center w-[700px] h-[400px]">
+            <Container maxWidth="sm" className="bg-white bg-opacity-80 rounded-lg p-8 text-center w-[650px] h-[390px]">
                 <h1
                     className="mb-4 text-center"
                     style={{fontSize: "34px", fontFamily: "Poppins"}}
@@ -56,7 +56,7 @@ export default function Login() {
                     </Link>
                 </form>
                 <br />
-                <Typography variant="body2" align="center" className="mt-2" style={{ fontFamily: 'Poppins' }}>
+                <Typography variant="body2" align="center" className="mt-2" style={{ fontFamily: 'Roboto' }}>
                     Don't have an account?
                     <br/>
                     <Link to="/register" className="text-primary" style={{ color: "blue" }}>

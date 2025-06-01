@@ -60,8 +60,8 @@ export default function Register() {
           style={{ alignItems: "center" }}
         >
           <h1
-            className="mb-4 text-center"
-            style={{ fontSize: "34px", fontFamily: "Poppins" }}
+            className="relative mb-3.5 text-center"
+            style={{ fontSize: "34px", fontFamily: "Poppins", top:"5px" }}
           >
             Sign Up
           </h1>
@@ -141,8 +141,8 @@ export default function Register() {
             </Link>
           </form>
           <br />
-          <Typography variant="body2" align="center" className="mt-2" style={{ fontFamily: 'Poppins' }}>
-           Already have an Account?
+          <Typography variant="body2" align="center" className="mt-2" style={{ fontFamily: 'Roboto', top:"7vh" }}>
+            Already have an Account?
             <br/>
             <Link to="/login" className="text-primary" style={{ color: "blue" }}>
               {" "}

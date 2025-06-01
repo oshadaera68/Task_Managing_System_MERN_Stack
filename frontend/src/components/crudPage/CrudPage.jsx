@@ -1,10 +1,9 @@
 import React from 'react'
 
-export default function Dashboard() {
+export default function CrudPage() {
   return (
     <div>
-      <h1>Dashboard</h1>
+      crudpage
     </div>
   )
 }
-
