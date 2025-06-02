@@ -13,6 +13,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import axios from "axios";
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 
 export default function CrudPage() {
     const [formData, setFormData] = useState({
@@ -81,6 +82,7 @@ export default function CrudPage() {
 
     return (
         <div className="absolute w-full h-full bg-blue-700 bg-no-repeat bg-cover flex items-center justify-center">
+            <ArrowBackIosIcon className="relative top-6 left-6 " style={{ color: "white" }} />
             <Container
                 maxWidth="sm"
                 className="bg-white bg-opacity-85 rounded-lg p-8 text-center w-[670px] h-[640px]"

@@ -3,15 +3,12 @@ import {
     AppBar, Box, Button, Toolbar, Typography, Card, CardContent
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { useAuth } from '../../AuthContext';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 
-export default function Dashboard() {
-    // Access authenticated user from context
-    const { user } = useAuth();
 
+export default function Dashboard() {
     // State to store fetched tasks
     const [tasks, setTasks] = useState([]);
 
