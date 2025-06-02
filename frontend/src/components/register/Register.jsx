@@ -32,6 +32,7 @@ export default function Register() {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -69,6 +70,8 @@ export default function Register() {
       return;
     }
 
+    setLoading(true);
+
     try {
       const response = await axios.post("http://localhost:4000/signup", {
         name,
@@ -87,6 +90,8 @@ export default function Register() {
     } catch (error) {
       console.error("Error during signup:", error);
       setShowSnackbar({ open: true, message: "Signup failed. Try again." });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -172,8 +177,8 @@ export default function Register() {
                 onChange={handleChange}
             />
             <br />
-            <Button type="submit" variant="contained" className="mt-2" sx={{ py: 1 }}>
-              Sign Up
+            <Button type="submit" variant="contained" className="mt-2" sx={{ py: 1 }} disabled={loading}>
+              {loading ? "Signing up..." : "Sign up"}
             </Button>
           </form>
           <br />

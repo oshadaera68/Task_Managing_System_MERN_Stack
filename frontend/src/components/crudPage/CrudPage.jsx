@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Button,
     Container,
@@ -14,8 +14,13 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import axios from "axios";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { useLocation, useNavigate, Link } from 'react-router-dom'; // ✅ Import for routing
 
 export default function CrudPage() {
+    const location = useLocation(); //  Get location state
+    const navigate = useNavigate(); //  Navigation after submit
+    const editingTask = location.state?.task || null;
+
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -26,7 +31,20 @@ export default function CrudPage() {
 
     const [value, setValue] = useState(dayjs());
     const [errors, setErrors] = useState({});
-    const [currentTask, setCurrentTask] = useState(null); // Not used in logic yet
+
+    // ✅ Pre-fill form if editing
+    useEffect(() => {
+        if (editingTask) {
+            setFormData({
+                title: editingTask.title,
+                description: editingTask.description,
+                priority: editingTask.priority,
+                status: editingTask.status,
+                createdBy: editingTask.createdBy
+            });
+            setValue(dayjs(editingTask.dueDate));
+        }
+    }, [editingTask]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -40,7 +58,6 @@ export default function CrudPage() {
         e.preventDefault();
         const validationErrors = {};
 
-        // Form validation
         if (!formData.title.trim()) validationErrors.title = "Title is required.";
         if (!formData.description.trim()) validationErrors.description = "Description is required.";
         if (!formData.priority.trim()) validationErrors.priority = "Priority is required.";
@@ -54,15 +71,22 @@ export default function CrudPage() {
         }
 
         try {
-            const newTask = {
+            const taskData = {
                 ...formData,
-                dueDate: value.format("YYYY-MM-DD") // format date
+                dueDate: value.format("YYYY-MM-DD")
             };
 
-            const response = await axios.post("http://localhost:4000/task", newTask);
-            console.log("Task added:", response.data);
+            if (editingTask) {
+                // Update task (PUT)
+                await axios.put(`http://localhost:4000/task/${editingTask._id}`, taskData);
+                console.log("Task updated");
+            } else {
+                // Create task (POST)
+                await axios.post("http://localhost:4000/task", taskData);
+                console.log("Task added");
+            }
 
-            // Reset form
+            // Reset and go back to dashboard
             setFormData({
                 title: '',
                 description: '',
@@ -70,10 +94,11 @@ export default function CrudPage() {
                 status: '',
                 createdBy: ''
             });
-            setValue(dayjs()); // reset date
+            setValue(dayjs());
             setErrors({});
+            navigate('/dashboard');
         } catch (error) {
-            console.error("Error adding task:", error.message);
+            console.error("Error saving task:", error.message);
             if (error.response) {
                 console.error("Server response:", error.response.data);
             }
@@ -82,13 +107,13 @@ export default function CrudPage() {
 
     return (
         <div className="absolute w-full h-full bg-blue-700 bg-no-repeat bg-cover flex items-center justify-center">
-            <ArrowBackIosIcon className="relative top-6 left-6 " style={{ color: "white" }} />
+            <Link to='/dashboard'><ArrowBackIosIcon className="absolute top-6 left-6 " style={{ color: "white" }} /></Link>
             <Container
                 maxWidth="sm"
                 className="bg-white bg-opacity-85 rounded-lg p-8 text-center w-[670px] h-[640px]"
             >
                 <h1 className="mb-4 text-center" style={{ fontSize: "30px", fontFamily: "Poppins" }}>
-                    Task Manager - {currentTask ? 'Edit Task' : 'New Task'}
+                    Task Manager - {editingTask ? 'Edit Task' : 'New Task'}
                 </h1>
 
                 <form onSubmit={handleSubmit} className="flex flex-col items-center gap-5">
@@ -174,8 +199,8 @@ export default function CrudPage() {
                         helperText={errors.createdBy}
                     />
 
-                    <Button type="submit" variant="contained" color="success">
-                        {currentTask ? 'Update' : 'Add'} Task
+                    <Button type="submit" variant="contained" color="success" className="w-1/4">
+                        {editingTask ? 'Update' : 'Add'} Task
                     </Button>
                 </form>
             </Container>

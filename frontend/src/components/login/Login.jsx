@@ -152,7 +152,7 @@
                         Don't have an account?
                         <br/>
                         <Link to="/register" style={{color: "blue"}}>
-                            Sign Up
+                            Sign up
                         </Link>
                     </Typography>
                 </Container>
