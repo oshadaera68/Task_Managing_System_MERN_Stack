@@ -172,7 +172,7 @@ export default function Register() {
                 onChange={handleChange}
             />
             <br />
-            <Button type="submit" variant="contained" className="mt-2" sx={{ py: 1 }} fullWidth>
+            <Button type="submit" variant="contained" className="mt-2" sx={{ py: 1 }}>
               Sign Up
             </Button>
           </form>
