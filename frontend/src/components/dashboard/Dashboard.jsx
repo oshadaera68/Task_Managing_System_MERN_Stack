@@ -112,12 +112,6 @@ export default function Dashboard() {
                                     <Typography variant="body2" sx={{ mb: 1 }}>
                                         Priority: {task.priority}
                                     </Typography>
-                                    <Typography variant="body2" sx={{ mb: 1 }}>
-                                        Due Date: {task.dueDate}
-                                    </Typography>
-                                    <Typography variant="body2" sx={{ mb: 1 }}>
-                                        Created By: {task.createdBy}
-                                    </Typography>
 
                                     <div className="flex gap-2 mt-2">
                                         <button
