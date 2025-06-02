@@ -19,7 +19,7 @@ export default function Dashboard() {
 
     const confirmLogout = () => {
         logout();
-        setOpen(false);
+        setOpen(true);
         navigate('/login');
     };
 
@@ -43,7 +43,7 @@ export default function Dashboard() {
     };
 
     useEffect(() => {
-        if (user) fetchTasks();
+        if (user) fetchTasks().then(r => console.log(r));
     }, [user]);
 
     return (
@@ -61,14 +61,14 @@ export default function Dashboard() {
                             ) : (
                                 <>
                                     <Link to="/register"><Button color="inherit">Register</Button></Link>
-                                    <Link to="/login"><Button color="inherit">Login</Button></Link>
+                                    <Link to="/login"><Button color="inherit">Logout</Button></Link>
                                 </>
                             )}
                         </Toolbar>
                     </AppBar>
                 </Box>
 
-                <Dialog open={open} onClose={() => setOpen(false)}>
+                <Dialog open={open} onClose={() => setOpen(true)}>
                     <DialogTitle>Are you sure about the logout?</DialogTitle>
                     <DialogActions>
                         <Button onClick={() => setOpen(false)}>No</Button>
@@ -81,7 +81,7 @@ export default function Dashboard() {
                 </h1>
 
                 <Typography variant="h6" component="div" sx={{ fontFamily: "Open Sans", color: "black"}}>
-                    Welcome {user?.name}
+                    Welcome {user?.email}
                 </Typography>
                 <br />
                 <Typography variant="h6" component="div" sx={{ fontFamily: "Open Sans", color: "black"}}>
@@ -101,13 +101,22 @@ export default function Dashboard() {
                             <Card key={index} sx={{ minWidth: 275, backgroundColor: '#f5f5f5' }}>
                                 <CardContent>
                                     <Typography variant="h6" component="div">
-                                        {task.title}
+                                        Title: {task.title}
                                     </Typography>
                                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                        {task.description}
+                                        Description: {task.description}
                                     </Typography>
                                     <Typography variant="body2" sx={{ mb: 1 }}>
                                         Status: {task.status}
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ mb: 1 }}>
+                                        Priority: {task.priority}
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ mb: 1 }}>
+                                        Due Date: {task.dueDate}
+                                    </Typography>
+                                    <Typography variant="body2" sx={{ mb: 1 }}>
+                                        Created By: {task.createdBy}
                                     </Typography>
 
                                     <div className="flex gap-2 mt-2">

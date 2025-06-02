@@ -3,7 +3,7 @@ const SignUp = require('../model/signup.model');
 const { Router } = require("express");
 const router = Router();
 
-router.post('/', async (req, res) => {  // <-- use '/' here
+router.post('/', async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
 
@@ -13,11 +13,8 @@ router.post('/', async (req, res) => {  // <-- use '/' here
             return res.status(400).send('User already exists');
         }
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Save user with hashed password
-        const newUser = new SignUp({ name, email, password: hashedPassword, role });
+        // ❌ Don't hash manually — model will do it
+        const newUser = new SignUp({ name, email, password, role });
         await newUser.save();
 
         res.status(201).send('Signup successful');

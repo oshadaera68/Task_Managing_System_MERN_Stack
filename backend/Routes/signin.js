@@ -1,39 +1,42 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const SignIn = require('../model/signup.model'); // assuming signup stores users
-const express = require('express')
-const app = express();
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
+const jwt = require("jsonwebtoken");
+const SignUp = require("../model/signup.model"); // ✅ USE THIS
 
-const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key_here';
+router.post("/", async (req, res) => {
+    const { email, password } = req.body;
 
-router.post('/signin', async (req, res) => {
+    if (!email || !password) {
+        return res.status(400).json({ message: "Email and password are required" });
+    }
+
     try {
-        const { email, password } = req.body;
+        const user = await SignUp.findOne({ email });
+        console.log("User from DB:", user);
 
-        // Find user
-        const user = await SignIn.findOne({ email });
         if (!user) {
-            return res.status(400).send('Invalid email or password');
+            return res.status(401).json({ message: "Invalid email or password (user not found)" });
         }
 
-        // Compare password
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await user.comparePassword(password);
+        console.log("Password match:", isMatch);
+
         if (!isMatch) {
-            return res.status(400).send('Invalid email or password');
+            return res.status(401).json({ message: "Invalid email or password (wrong password)" });
         }
 
-        // Generate JWT token
+        // Create JWT
         const token = jwt.sign(
-            { userId: user._id, email: user.email, role: user.role },
-            SECRET_KEY,
-            { expiresIn: '1h' }
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET || "secret", // fallback for dev
+            { expiresIn: "1d" }
         );
 
-        res.json({ token });
-    } catch (error) {
-        res.status(500).send(error.message);
+        return res.status(200).json({ message: "Login successful", token });
+    } catch (err) {
+        console.error("Login error:", err);
+        res.status(500).json({ message: "Internal server error" });
     }
 });
 
-module.exports = router
+module.exports = router;

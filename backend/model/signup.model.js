@@ -6,7 +6,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
+const signUpSchema = new mongoose.Schema({
     name: { type: String, required: false }, // optional, if you want to store names
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
 });
 
 // Pre-save hook to hash password automatically before saving
-userSchema.pre('save', async function(next) {
+signUpSchema.pre('save', async function(next) {
     if (!this.isModified('password')) return next();
     try {
         const salt = await bcrypt.genSalt(10);
@@ -26,9 +26,9 @@ userSchema.pre('save', async function(next) {
 });
 
 // Method to compare password for login
-userSchema.methods.comparePassword = async function(candidatePassword) {
+signUpSchema.methods.comparePassword = async function(candidatePassword) {
     return bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('SignUp', signUpSchema);
 
