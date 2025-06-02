@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {
     AppBar, Box, Button, Card, CardContent, IconButton, Toolbar, Tooltip, Typography,
-    Dialog, DialogActions, DialogTitle, Slide, Snackbar, CircularProgress
+    Dialog, DialogActions, DialogTitle, Snackbar, CircularProgress
 } from "@mui/material";
 import {Link, useNavigate} from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
@@ -18,10 +18,6 @@ export default function Dashboard() {
     const [isLoading, setIsLoading] = useState(true);
 
     const navigate = useNavigate();
-
-    const Transition = React.forwardRef(function Transition(props, ref) {
-        return <Slide direction="up" ref={ref} {...props} />;
-    });
 
     const handleClickOpen = (id) => {
         setSelectedTaskId(id);
@@ -50,20 +46,23 @@ export default function Dashboard() {
 
     const logOutModel = () => {
         if (window.confirm("Are you sure you want to logout?")) {
-            // Add logout logic here if needed (e.g., clear auth token)
             navigate('/login');
         }
     };
 
-    const deleteTask = async (id) => {
-        const taskToDelete = tasks.find(t => t._id === id);
+    const deleteTask = async () => {
+        if (!selectedTaskId) return;
+        const taskToDelete = tasks.find(t => t._id === selectedTaskId);
         try {
-            await axios.delete(`http://localhost:4000/task/${id}`);
+            await axios.delete(`http://localhost:4000/task/${selectedTaskId}`);
             setDeletedTask(taskToDelete);
-            setTasks(prev => prev.filter(task => task._id !== id));
+            setTasks(prev => prev.filter(task => task._id !== selectedTaskId));
             setSnackbarOpen(true);
         } catch (error) {
             console.error('Error deleting task:', error);
+        } finally {
+            setOpen(false);
+            setSelectedTaskId(null); // reset after deletion
         }
     };
 
@@ -71,7 +70,7 @@ export default function Dashboard() {
         if (deletedTask) {
             try {
                 await axios.post('http://localhost:4000/task', deletedTask);
-                fetchTasks(); // refresh tasks
+                fetchTasks();
             } catch (error) {
                 console.error('Error restoring task:', error);
             }
@@ -115,18 +114,16 @@ export default function Dashboard() {
             {/* Confirmation Dialog */}
             <Dialog
                 open={open}
-                TransitionComponent={Transition}
-                keepMounted
                 onClose={handleClose}
-                aria-describedby="alert-dialog-slide-description"
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
             >
-                <DialogTitle>{"Are you sure you want to delete this task?"}</DialogTitle>
+                <DialogTitle id="alert-dialog-title">{"Are you sure you want to delete this task?"}</DialogTitle>
                 <DialogActions>
-                    <Button onClick={() => {
-                        deleteTask(selectedTaskId);
-                        handleClose();
-                    }}>Yes</Button>
                     <Button onClick={handleClose}>No</Button>
+                    <Button onClick={deleteTask} color="error" autoFocus>
+                        Yes
+                    </Button>
                 </DialogActions>
             </Dialog>
 
@@ -144,7 +141,7 @@ export default function Dashboard() {
                 }
             />
 
-            {/* Loading Spinner */}
+            {/* Loading Spinner or Task Cards */}
             {isLoading ? (
                 <Box sx={{display: 'flex', justifyContent: 'center', mt: 4}}>
                     <CircularProgress/>
