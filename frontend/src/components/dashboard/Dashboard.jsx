@@ -195,7 +195,7 @@ export default function Dashboard() {
                     </div>) : (<div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                         {tasks.length > 0 ? (tasks.map((task) => (
                                 <Card key={task._id} sx={{backgroundColor: '#f5f5f5', cursor: 'pointer'}}
-                                      className="w-full" onClick={() => navigate('/crud', {state: {task}})}>
+                                      className="w-full">
                                     <CardContent>
                                         <Typography variant="h6">Title: {task.title}</Typography>
                                         <Typography sx={{mb: 1.5}} color="text.secondary">

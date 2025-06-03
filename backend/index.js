@@ -47,6 +47,6 @@ app.listen(port, () => {
 });
 
 app.listen(5000, () => {
-    console.log('Server running on http://localhost:5000');
+    // console.log('Server running on http://localhost:5000');
     console.log('Swagger docs at http://localhost:5000/api-docs');
 });
