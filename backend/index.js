@@ -8,16 +8,6 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
-    console.log("Connected to MongoDB");
-}).catch((err) => {
-    console.error("MongoDB connection error:", err);
-});
-
 // Import routes
 const task = require("./Routes/task");
 const signIn = require("./Routes/signin");
@@ -45,23 +35,36 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// ✅ Updated API Route Mounts to match Swagger
+// ✅ API routes
 app.use("/api/tasks", task);
 app.use("/api/login", signIn);
 app.use("/api/register", signUp);
 
-// Error handler
+// Global Error Handler
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+    console.error("❌ Global Error:", err.stack);
     const statusCode = err.statusCode || 500;
     res.status(statusCode).json({ error: err.message || 'Internal Server Error' });
 });
 
-// Start the server (except during testing)
-if (process.env.NODE_ENV !== 'test') {
-    app.listen(port, () => {
-        console.log(`Task application listening on port ${port}`);
+// ✅ MongoDB connection and server start
+mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 20000,
+})
+    .then(() => {
+        console.log("✅ Connected to MongoDB");
+
+        if (process.env.NODE_ENV !== 'test') {
+            app.listen(port, () => {
+                console.log(`🚀 Task application listening on port ${port}`);
+            });
+        }
+    })
+    .catch((err) => {
+        console.error("❌ MongoDB connection error:", err.message);
+        process.exit(1); // Exit app if DB connection fails
     });
-}
 
 module.exports = app;
