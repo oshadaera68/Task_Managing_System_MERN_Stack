@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
+    Alert,
     Button,
     Container,
     FormControl,
     InputLabel,
     MenuItem,
     Select,
+    Snackbar,
     TextField
 } from "@mui/material";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -14,11 +16,11 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import axios from "axios";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { useLocation, useNavigate, Link } from 'react-router-dom'; // ✅ Import for routing
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 
 export default function CrudPage() {
-    const location = useLocation(); //  Get location state
-    const navigate = useNavigate(); //  Navigation after submit
+    const location = useLocation();
+    const navigate = useNavigate();
     const editingTask = location.state?.task || null;
 
     const [formData, setFormData] = useState({
@@ -31,8 +33,10 @@ export default function CrudPage() {
 
     const [value, setValue] = useState(dayjs());
     const [errors, setErrors] = useState({});
+    const [open, setOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
 
-    // ✅ Pre-fill form if editing
     useEffect(() => {
         if (editingTask) {
             setFormData({
@@ -73,20 +77,20 @@ export default function CrudPage() {
         try {
             const taskData = {
                 ...formData,
-                dueDate: value.format("YYYY-MM-DD") // Save only the date part
+                dueDate: value.format("YYYY-MM-DD")
             };
 
             if (editingTask) {
-                // Update task (PUT)
                 await axios.put(`http://localhost:4000/task/${editingTask._id}`, taskData);
-                console.log("Task updated");
+                setSnackbarMessage("Task updated successfully!");
             } else {
-                // Create task (POST)
                 await axios.post("http://localhost:4000/task", taskData);
-                console.log("Task added");
+                setSnackbarMessage("Task added successfully!");
             }
 
-            // Reset and go back to dashboard
+            setSnackbarSeverity('success');
+            setOpen(true);
+
             setFormData({
                 title: '',
                 description: '',
@@ -96,18 +100,29 @@ export default function CrudPage() {
             });
             setValue(dayjs());
             setErrors({});
-            navigate('/dashboard');
+
+            setTimeout(() => navigate('/dashboard'), 1000);
         } catch (error) {
             console.error("Error saving task:", error.message);
             if (error.response) {
                 console.error("Server response:", error.response.data);
             }
+            setSnackbarMessage("An error occurred. Please try again.");
+            setSnackbarSeverity('error');
+            setOpen(true);
         }
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setOpen(false);
     };
 
     return (
         <div className="absolute w-full h-full bg-blue-700 bg-no-repeat bg-cover flex items-center justify-center">
-            <Link to='/dashboard'><ArrowBackIosIcon className="absolute top-6 left-6 " style={{ color: "white" }} /></Link>
+            <Link to='/dashboard'>
+                <ArrowBackIosIcon className="absolute top-6 left-6" style={{ color: "white" }} />
+            </Link>
             <Container
                 maxWidth="sm"
                 className="bg-white bg-opacity-85 rounded-lg p-8 text-center w-[670px] h-[640px]"
@@ -115,6 +130,17 @@ export default function CrudPage() {
                 <h1 className="mb-4 text-center" style={{ fontSize: "30px", fontFamily: "Poppins" }}>
                     Task Manager - {editingTask ? 'Edit Task' : 'New Task'}
                 </h1>
+
+                <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
+                    <Alert
+                        onClose={handleClose}
+                        severity={snackbarSeverity}
+                        variant="filled"
+                        sx={{ width: '100%'}}
+                    >
+                        {snackbarMessage}
+                    </Alert>
+                </Snackbar>
 
                 <form onSubmit={handleSubmit} className="flex flex-col items-center gap-5">
                     <TextField
@@ -157,6 +183,7 @@ export default function CrudPage() {
                             <MenuItem value="Medium">Medium</MenuItem>
                             <MenuItem value="High">High</MenuItem>
                         </Select>
+                        {errors.priority && <p className="text-red-500 text-sm">{errors.priority}</p>}
                     </FormControl>
 
                     <FormControl className="w-1/2">
@@ -175,6 +202,7 @@ export default function CrudPage() {
                             <MenuItem value="In Progress">In Progress</MenuItem>
                             <MenuItem value="Completed">Completed</MenuItem>
                         </Select>
+                        {errors.status && <p className="text-red-500 text-sm">{errors.status}</p>}
                     </FormControl>
 
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
