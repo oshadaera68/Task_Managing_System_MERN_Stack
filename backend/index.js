@@ -32,6 +32,10 @@ const corsOptions = {
 
 app.use(express.json());
 app.use(cors(corsOptions));
+app.use(cors({
+    origin: "https://your-frontend-name.vercel.app",
+    credentials: true // if you use cookies or auth headers
+}));
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
