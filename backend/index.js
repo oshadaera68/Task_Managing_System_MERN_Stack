@@ -32,7 +32,7 @@ const corsOptions = {
 };
 
 app.use(express.json());
-app.use(cors(corsOptions));
+app.use(cors(corsOptions, {  origin: "*"}));
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
