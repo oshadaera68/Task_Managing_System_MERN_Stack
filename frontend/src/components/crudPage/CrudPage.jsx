@@ -73,7 +73,7 @@ export default function CrudPage() {
         try {
             const taskData = {
                 ...formData,
-                dueDate: value.format("YYYY-MM-DD")
+                dueDate: value.format("YYYY-MM-DD") // Save only the date part
             };
 
             if (editingTask) {
