@@ -7,7 +7,7 @@ describe('POST /signin', () => {
     beforeAll(async () => {
         // Connect to DB if not connected
         if (mongoose.connection.readyState === 0) {
-            await mongoose.connect(process.env.MONGO_URI, {
+            await mongoose.connect(process.env.MONGO_URL, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             });

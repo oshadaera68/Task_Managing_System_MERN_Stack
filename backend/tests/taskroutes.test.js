@@ -10,7 +10,7 @@ let testUserId;
 let testTaskId;
 
 beforeAll(async () => {
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(process.env.MONGO_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });
