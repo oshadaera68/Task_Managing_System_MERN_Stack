@@ -17,6 +17,7 @@ import dayjs from 'dayjs';
 import axios from "axios";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; // <--- Added
 
 export default function CrudPage() {
     const location = useLocation();
@@ -47,6 +48,20 @@ export default function CrudPage() {
                 createdBy: editingTask.createdBy
             });
             setValue(dayjs(editingTask.dueDate));
+        } else {
+            // Decode token and set createdBy
+            const token = localStorage.getItem("token");
+            if (token) {
+                try {
+                    const decoded = jwtDecode(token);
+                    setFormData(prev => ({
+                        ...prev,
+                        createdBy: decoded.id // or decoded.email, if you prefer
+                    }));
+                } catch (err) {
+                    console.error("Failed to decode token", err);
+                }
+            }
         }
     }, [editingTask]);
 
@@ -80,11 +95,17 @@ export default function CrudPage() {
                 dueDate: value.format("YYYY-MM-DD")
             };
 
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            };
+
             if (editingTask) {
-                await axios.put(`http://localhost:4000/task/${editingTask._id}`, taskData);
+                await axios.put(`http://localhost:4000/task/${editingTask._id}`, taskData, config);
                 setSnackbarMessage("Task updated successfully!");
             } else {
-                await axios.post("http://localhost:4000/task", taskData);
+                await axios.post("http://localhost:4000/task", taskData, config);
                 setSnackbarMessage("Task added successfully!");
             }
 
@@ -221,7 +242,7 @@ export default function CrudPage() {
                         label="Created By"
                         name="createdBy"
                         value={formData.createdBy}
-                        onChange={handleChange}
+                        InputProps={{ readOnly: true }}  // Set readOnly to true
                         className="w-1/2"
                         error={!!errors.createdBy}
                         helperText={errors.createdBy}

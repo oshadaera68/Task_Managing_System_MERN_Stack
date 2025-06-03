@@ -35,10 +35,17 @@ export default function Dashboard() {
     const fetchTasks = async () => {
         setIsLoading(true);
         try {
-            const res = await axios.get('http://localhost:4000/task');
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('No token found. Please login.');
+
+            const config = {
+                headers: { Authorization: `Bearer ${token}` }
+            };
+
+            const res = await axios.get('http://localhost:4000/task', config);
             setTasks(res.data);
         } catch (error) {
-            console.error("Error fetching tasks:", error.message);
+            console.error("Error fetching tasks:", error.response?.data || error.message);
         } finally {
             setIsLoading(false);
         }
@@ -54,12 +61,19 @@ export default function Dashboard() {
         if (!selectedTaskId) return;
         const taskToDelete = tasks.find(t => t._id === selectedTaskId);
         try {
-            await axios.delete(`http://localhost:4000/task/${selectedTaskId}`);
+            const token = localStorage.getItem('token');
+            if (!token) throw new Error('No token found. Please login.');
+
+            const config = {
+                headers: { Authorization: `Bearer ${token}` }
+            };
+
+            await axios.delete(`http://localhost:4000/task/${selectedTaskId}`, config);
             setDeletedTask(taskToDelete);
             setTasks(prev => prev.filter(task => task._id !== selectedTaskId));
             setSnackbarOpen(true);
         } catch (error) {
-            console.error('Error deleting task:', error);
+            console.error('Error deleting task:', error.response?.data || error.message);
         } finally {
             setOpen(false);
             setSelectedTaskId(null); // reset after deletion
@@ -69,15 +83,23 @@ export default function Dashboard() {
     const undoDelete = async () => {
         if (deletedTask) {
             try {
-                await axios.post('http://localhost:4000/task', deletedTask);
+                const token = localStorage.getItem('token');
+                if (!token) throw new Error('No token found. Please login.');
+
+                const config = {
+                    headers: { Authorization: `Bearer ${token}` }
+                };
+
+                await axios.post('http://localhost:4000/task', deletedTask, config);
                 fetchTasks();
             } catch (error) {
-                console.error('Error restoring task:', error);
+                console.error('Error restoring task:', error.response?.data || error.message);
             }
         }
         setSnackbarOpen(false);
         setDeletedTask(null);
     };
+
 
     useEffect(() => {
         fetchTasks();

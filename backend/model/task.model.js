@@ -29,7 +29,8 @@ const taskSchema = new mongoose.Schema({
         required: false
     },
     createdBy: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'SignUp',
         required: true
     }
 }, {
