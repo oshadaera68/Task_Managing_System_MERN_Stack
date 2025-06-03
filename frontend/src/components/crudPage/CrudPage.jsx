@@ -84,10 +84,10 @@ export default function CrudPage() {
             };
 
             if (editingTask) {
-                await axios.put(`https://tms-backend-7mx2.onrender.com/task/${editingTask._id}`, taskData, config);
+                await axios.put(`https://tms-backend-7mx2.onrender.com/api/task/${editingTask._id}`, taskData, config);
                 setSnackbarMessage("Task updated successfully!");
             } else {
-                await axios.post(`https://tms-backend-7mx2.onrender.com/task`, taskData, config);
+                await axios.post(`https://tms-backend-7mx2.onrender.com/api/task`, taskData, config);
                 setSnackbarMessage("Task added successfully!");
             }
 

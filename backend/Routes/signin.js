@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 const SignUp = require("../model/signup.model");
 
 /**
@@ -61,12 +62,13 @@ router.post("/", async (req, res, next) => {
     try {
         const user = await SignUp.findOne({ email });
         if (!user) {
-            return res.status(401).json({ message: "Invalid email or password (user not found)" });
+            return res.status(401).json({ message: "Invalid email or password" });
         }
 
-        const isMatch = await user.comparePassword(password);
+        // Compare hashed password using bcrypt
+        const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ message: "Invalid email or password (wrong password)" });
+            return res.status(401).json({ message: "Invalid email or password" });
         }
 
         const token = jwt.sign(

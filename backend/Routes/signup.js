@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const router = Router();
-const SignUp = require('../model/signup.model');
+const bcrypt = require("bcryptjs");
+const SignUp = require("../model/signup.model");
 
 /**
  * @swagger
@@ -44,33 +45,48 @@ const SignUp = require('../model/signup.model');
  *       201:
  *         description: Signup successful
  *         content:
- *           text/plain:
+ *           application/json:
  *             schema:
- *               type: string
- *               example: Signup successful
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Signup successful
  *       400:
  *         description: User already exists
  *         content:
- *           text/plain:
+ *           application/json:
  *             schema:
- *               type: string
- *               example: User already exists
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: User already exists
  *       500:
  *         description: Internal server error
  */
-router.post('/', async (req, res, next) => {
+router.post("/", async (req, res, next) => {
     try {
         const { name, email, password, role } = req.body;
 
         const userExists = await SignUp.findOne({ email });
         if (userExists) {
-            return res.status(400).send('User already exists');
+            return res.status(400).json({ message: "User already exists" });
         }
 
-        const newUser = new SignUp({ name, email, password, role });
+        // Hash the password before saving
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = new SignUp({
+            name,
+            email,
+            password: hashedPassword,
+            role,
+        });
+
         await newUser.save();
 
-        res.status(201).send('Signup successful');
+        res.status(201).json({ message: "Signup successful" });
     } catch (error) {
         next(error);
     }

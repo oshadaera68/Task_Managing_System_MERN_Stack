@@ -65,7 +65,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:4000/signup", {
+      const response = await axios.post("https://tms-backend-7mx2.onrender.com/api/register", {
         name, email, password, role,
       });
       console.log(response.data)
