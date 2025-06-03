@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "nodemon": "nodemon index.js",
-    "test": "jest"
+    "test": "jest",
+    "build": "echo 'No build step required'"
   },
   "jest": {
     "testEnvironment": "node"
