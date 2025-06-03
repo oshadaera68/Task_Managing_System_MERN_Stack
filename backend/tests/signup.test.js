@@ -11,7 +11,7 @@ const SignUp = require('../model/signup.model');
 describe('POST /signup', () => {
     beforeAll(async () => {
         if (mongoose.connection.readyState === 0) {
-            await mongoose.connect(process.env.MONGO_URL, {
+            await mongoose.connect(process.env.MONGO_URI, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             });

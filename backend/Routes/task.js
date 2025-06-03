@@ -3,7 +3,33 @@ const router = express.Router();
 const Task = require('../model/task.model');
 const auth = require('../middleware/auth');
 
-// 🔒 Get all tasks for logged-in user
+/**
+ * @swagger
+ * tags:
+ *   name: Tasks
+ *   description: Task management endpoints
+ */
+
+/**
+ * @swagger
+ * /api/tasks:
+ *   get:
+ *     summary: Get all tasks for the logged-in user
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of tasks
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Task'
+ *       401:
+ *         description: Unauthorized
+ */
 router.get('/', auth, async (req, res, next) => {
     try {
         const tasks = await Task.find({ createdBy: req.user.id });
@@ -13,7 +39,35 @@ router.get('/', auth, async (req, res, next) => {
     }
 });
 
-// 🔒 Create task — assign `createdBy` from token
+/**
+ * @swagger
+ * /api/tasks:
+ *   post:
+ *     summary: Create a new task
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/TaskInput'
+ *     responses:
+ *       201:
+ *         description: Task added
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 task:
+ *                   $ref: '#/components/schemas/Task'
+ *       401:
+ *         description: Unauthorized
+ */
 router.post('/', auth, async (req, res, next) => {
     try {
         const task = new Task({ ...req.body, createdBy: req.user.id });
@@ -24,7 +78,41 @@ router.post('/', auth, async (req, res, next) => {
     }
 });
 
-// 🔒 Update task — only if owner
+/**
+ * @swagger
+ * /api/tasks/{id}:
+ *   put:
+ *     summary: Update a task (only if owner)
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Task ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/TaskInput'
+ *     responses:
+ *       200:
+ *         description: Task updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Task'
+ *       403:
+ *         description: Unauthorized to update
+ *       404:
+ *         description: Task not found
+ *       401:
+ *         description: Unauthorized
+ */
 router.put('/:id', auth, async (req, res, next) => {
     try {
         const task = await Task.findById(req.params.id);
@@ -41,7 +129,31 @@ router.put('/:id', auth, async (req, res, next) => {
     }
 });
 
-// 🔒 Delete task — only if owner
+/**
+ * @swagger
+ * /api/tasks/{id}:
+ *   delete:
+ *     summary: Delete a task (only if owner)
+ *     tags: [Tasks]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Task ID
+ *     responses:
+ *       200:
+ *         description: Task deleted successfully
+ *       403:
+ *         description: Unauthorized to delete
+ *       404:
+ *         description: Task not found
+ *       401:
+ *         description: Unauthorized
+ */
 router.delete('/:id', auth, async (req, res, next) => {
     try {
         const task = await Task.findById(req.params.id);
