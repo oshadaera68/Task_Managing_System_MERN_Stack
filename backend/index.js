@@ -19,7 +19,7 @@ const task = require("./Routes/task");
 const signIn = require("./Routes/signin");
 const signUp = require("./Routes/signup");
 
-const allowedOrigins = ["http://localhost:3000", "http://localhost:3001"];
+const allowedOrigins = ["http://localhost:3000", "http://localhost:3001", "https://tms-frontend-lz4xdiu4x-era-boys-projects.vercel.app/"];
 const corsOptions = {
     origin: (origin, callback) => {
         if (allowedOrigins.includes(origin) || !origin) {

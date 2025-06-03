@@ -65,7 +65,7 @@ export default function Dashboard() {
                 headers: {Authorization: `Bearer ${token}`}
             };
 
-            const res = await axios.get('http://localhost:5000/task', config);
+            const res = await axios.get(`https://tms-backend-7mx2.onrender.com/task`, config);
             setTasks(sortTasks(res.data)); // <-- Sort here
         } catch (error) {
             console.error("Error fetching tasks:", error.response?.data || error.message);
@@ -93,7 +93,7 @@ export default function Dashboard() {
                 headers: {Authorization: `Bearer ${token}`}
             };
 
-            await axios.delete(`http://localhost:5000/task/${selectedTaskId}`, config);
+            await axios.delete(`https://tms-backend-7mx2.onrender.com/task/${selectedTaskId}`, config);
             setDeletedTask(taskToDelete);
             setTasks(prev => prev.filter(task => task._id !== selectedTaskId));
             setSnackbarOpen(true);
@@ -115,7 +115,7 @@ export default function Dashboard() {
                     headers: {Authorization: `Bearer ${token}`}
                 };
 
-                await axios.post('http://localhost:5000/task', deletedTask, config);
+                await axios.post(`https://tms-backend-7mx2.onrender.com/task`, deletedTask, config);
                 fetchTasks(); // Will re-sort
             } catch (error) {
                 console.error('Error restoring task:', error.response?.data || error.message);
