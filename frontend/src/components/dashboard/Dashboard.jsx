@@ -1,9 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-    AppBar, Box, Button, Card, CardContent, IconButton, Toolbar, Tooltip, Typography,
-    Dialog, DialogActions, DialogTitle, Snackbar, CircularProgress
+    AppBar,
+    Box,
+    Button,
+    Card,
+    CardContent,
+    CircularProgress,
+    Dialog,
+    DialogActions,
+    DialogTitle,
+    IconButton,
+    Snackbar,
+    Toolbar,
+    Tooltip,
+    Typography
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useNavigate,} from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
@@ -11,7 +23,7 @@ import axios from 'axios';
 
 // Utility: Sort by priority then due date
 const sortTasks = (tasks) => {
-    const priorityOrder = { Low: 1, Medium: 2, High: 3 };
+    const priorityOrder = {Low: 1, Medium: 2, High: 3};
     return [...tasks].sort((a, b) => {
         const priorityA = priorityOrder[a.priority] || 4;
         const priorityB = priorityOrder[b.priority] || 4;
@@ -50,7 +62,7 @@ export default function Dashboard() {
             if (!token) throw new Error('No token found. Please login.');
 
             const config = {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: {Authorization: `Bearer ${token}`}
             };
 
             const res = await axios.get('http://localhost:4000/task', config);
@@ -78,7 +90,7 @@ export default function Dashboard() {
             if (!token) throw new Error('No token found. Please login.');
 
             const config = {
-                headers: { Authorization: `Bearer ${token}` }
+                headers: {Authorization: `Bearer ${token}`}
             };
 
             await axios.delete(`http://localhost:4000/task/${selectedTaskId}`, config);
@@ -100,7 +112,7 @@ export default function Dashboard() {
                 if (!token) throw new Error('No token found. Please login.');
 
                 const config = {
-                    headers: { Authorization: `Bearer ${token}` }
+                    headers: {Authorization: `Bearer ${token}`}
                 };
 
                 await axios.post('http://localhost:4000/task', deletedTask, config);
@@ -117,12 +129,11 @@ export default function Dashboard() {
         fetchTasks();
     }, []);
 
-    return (
-        <div className="min-h-screen bg-blue-300 bg-cover bg-no-repeat">
-            <Box sx={{ flexGrow: 1 }} className="bg-black">
+    return (<div className="min-h-screen bg-blue-300 bg-cover bg-no-repeat">
+            <Box sx={{flexGrow: 1}} className="bg-black">
                 <AppBar position="static">
                     <Toolbar>
-                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                        <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
                             Task Manager
                         </Typography>
                         <Link to="/register"><Button color="inherit">Register</Button></Link>
@@ -143,7 +154,7 @@ export default function Dashboard() {
 
                     <Link to='/crud'>
                         <Button variant="contained" color="secondary" className="!p-2">
-                            <AddIcon />
+                            <AddIcon/>
                         </Button>
                     </Link>
                 </div>
@@ -171,45 +182,40 @@ export default function Dashboard() {
                     open={snackbarOpen}
                     autoHideDuration={5000}
                     onClose={handleSnackbarClose}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                    anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
                     message="Task deleted"
-                    action={
-                        <Button color="secondary" size="small" onClick={undoDelete}>
-                            UNDO
-                        </Button>
-                    }
+                    action={<Button color="secondary" size="small" onClick={undoDelete}>
+                        UNDO
+                    </Button>}
                 />
 
                 {/* Loading or Tasks */}
-                {isLoading ? (
-                    <div className="flex justify-center mt-10">
-                        <CircularProgress />
-                    </div>
-                ) : (
-                    <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                        {tasks.length > 0 ? (
-                            tasks.map((task) => (
-                                <Card key={task._id} sx={{ backgroundColor: '#f5f5f5' }} className="w-full">
+                {isLoading ? (<div className="flex justify-center mt-10">
+                        <CircularProgress/>
+                    </div>) : (<div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                        {tasks.length > 0 ? (tasks.map((task) => (
+                                <Card key={task._id} sx={{backgroundColor: '#f5f5f5', cursor: 'pointer'}}
+                                      className="w-full" onClick={() => navigate('/crud', {state: {task}})}>
                                     <CardContent>
                                         <Typography variant="h6">Title: {task.title}</Typography>
-                                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                        <Typography sx={{mb: 1.5}} color="text.secondary">
                                             Description: {task.description}
                                         </Typography>
-                                        <Typography variant="body2" sx={{ mb: 1 }}>
+                                        <Typography variant="body2" sx={{mb: 1}}>
                                             Status: {task.status}
                                         </Typography>
-                                        <Typography variant="body2" sx={{ mb: 1 }}>
+                                        <Typography variant="body2" sx={{mb: 1}}>
                                             Priority: {task.priority}
                                         </Typography>
-                                        <Typography variant="body2" sx={{ mb: 1 }}>
+                                        <Typography variant="body2" sx={{mb: 1}}>
                                             Due Date: {task.dueDate}
                                         </Typography>
 
-                                        <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
-                                            <Link to="/crud" state={{ task }}>
+                                        <Box sx={{display: 'flex', gap: 1, mt: 2}}>
+                                            <Link to="/crud" state={{task}}>
                                                 <Tooltip title="Edit Task">
                                                     <IconButton color="warning" size="small">
-                                                        <EditIcon />
+                                                        <EditIcon/>
                                                     </IconButton>
                                                 </Tooltip>
                                             </Link>
@@ -219,21 +225,15 @@ export default function Dashboard() {
                                                     size="small"
                                                     onClick={() => handleClickOpen(task._id)}
                                                 >
-                                                    <DeleteIcon />
+                                                    <DeleteIcon/>
                                                 </IconButton>
                                             </Tooltip>
                                         </Box>
                                     </CardContent>
-                                </Card>
-                            ))
-                        ) : (
-                            <Typography sx={{ color: 'black', marginTop: 2 }}>
+                                </Card>))) : (<Typography sx={{color: 'black', marginTop: 2}}>
                                 No tasks available.
-                            </Typography>
-                        )}
-                    </div>
-                )}
+                            </Typography>)}
+                    </div>)}
             </div>
-        </div>
-    );
+        </div>);
 }
