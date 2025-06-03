@@ -1,13 +1,27 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     AppBar, Box, Button, Card, CardContent, IconButton, Toolbar, Tooltip, Typography,
     Dialog, DialogActions, DialogTitle, Snackbar, CircularProgress
 } from "@mui/material";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
+
+// Utility: Sort by priority then due date
+const sortTasks = (tasks) => {
+    const priorityOrder = { Low: 1, Medium: 2, High: 3 };
+    return [...tasks].sort((a, b) => {
+        const priorityA = priorityOrder[a.priority] || 4;
+        const priorityB = priorityOrder[b.priority] || 4;
+        if (priorityA !== priorityB) return priorityA - priorityB;
+
+        const dateA = new Date(a.dueDate);
+        const dateB = new Date(b.dueDate);
+        return dateA - dateB;
+    });
+};
 
 export default function Dashboard() {
     const [tasks, setTasks] = useState([]);
@@ -40,7 +54,7 @@ export default function Dashboard() {
             };
 
             const res = await axios.get('http://localhost:4000/task', config);
-            setTasks(res.data);
+            setTasks(sortTasks(res.data)); // <-- Sort here
         } catch (error) {
             console.error("Error fetching tasks:", error.response?.data || error.message);
         } finally {
@@ -90,7 +104,7 @@ export default function Dashboard() {
                 };
 
                 await axios.post('http://localhost:4000/task', deletedTask, config);
-                fetchTasks();
+                fetchTasks(); // Will re-sort
             } catch (error) {
                 console.error('Error restoring task:', error.response?.data || error.message);
             }
@@ -105,10 +119,10 @@ export default function Dashboard() {
 
     return (
         <div className="min-h-screen bg-blue-300 bg-cover bg-no-repeat">
-            <Box sx={{flexGrow: 1}} className="bg-black">
+            <Box sx={{ flexGrow: 1 }} className="bg-black">
                 <AppBar position="static">
                     <Toolbar>
-                        <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                             Task Manager
                         </Typography>
                         <Link to="/register"><Button color="inherit">Register</Button></Link>
@@ -129,7 +143,7 @@ export default function Dashboard() {
 
                     <Link to='/crud'>
                         <Button variant="contained" color="secondary" className="!p-2">
-                            <AddIcon/>
+                            <AddIcon />
                         </Button>
                     </Link>
                 </div>
@@ -169,33 +183,33 @@ export default function Dashboard() {
                 {/* Loading or Tasks */}
                 {isLoading ? (
                     <div className="flex justify-center mt-10">
-                        <CircularProgress/>
+                        <CircularProgress />
                     </div>
                 ) : (
                     <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                         {tasks.length > 0 ? (
                             tasks.map((task) => (
-                                <Card key={task._id} sx={{backgroundColor: '#f5f5f5'}} className="w-full">
+                                <Card key={task._id} sx={{ backgroundColor: '#f5f5f5' }} className="w-full">
                                     <CardContent>
                                         <Typography variant="h6">Title: {task.title}</Typography>
-                                        <Typography sx={{mb: 1.5}} color="text.secondary">
+                                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
                                             Description: {task.description}
                                         </Typography>
-                                        <Typography variant="body2" sx={{mb: 1}}>
+                                        <Typography variant="body2" sx={{ mb: 1 }}>
                                             Status: {task.status}
                                         </Typography>
-                                        <Typography variant="body2" sx={{mb: 1}}>
+                                        <Typography variant="body2" sx={{ mb: 1 }}>
                                             Priority: {task.priority}
                                         </Typography>
-                                        <Typography variant="body2" sx={{mb: 1}}>
+                                        <Typography variant="body2" sx={{ mb: 1 }}>
                                             Due Date: {task.dueDate}
                                         </Typography>
 
-                                        <Box sx={{display: 'flex', gap: 1, mt: 2}}>
-                                            <Link to="/crud" state={{task}}>
+                                        <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
+                                            <Link to="/crud" state={{ task }}>
                                                 <Tooltip title="Edit Task">
                                                     <IconButton color="warning" size="small">
-                                                        <EditIcon/>
+                                                        <EditIcon />
                                                     </IconButton>
                                                 </Tooltip>
                                             </Link>
@@ -205,7 +219,7 @@ export default function Dashboard() {
                                                     size="small"
                                                     onClick={() => handleClickOpen(task._id)}
                                                 >
-                                                    <DeleteIcon/>
+                                                    <DeleteIcon />
                                                 </IconButton>
                                             </Tooltip>
                                         </Box>
@@ -213,7 +227,7 @@ export default function Dashboard() {
                                 </Card>
                             ))
                         ) : (
-                            <Typography sx={{color: 'black', marginTop: 2}}>
+                            <Typography sx={{ color: 'black', marginTop: 2 }}>
                                 No tasks available.
                             </Typography>
                         )}
