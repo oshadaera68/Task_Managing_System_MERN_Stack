@@ -65,7 +65,7 @@ export default function Dashboard() {
                 headers: {Authorization: `Bearer ${token}`}
             };
 
-            const res = await axios.get('http://localhost:4000/task', config);
+            const res = await axios.get('http://localhost:5000/task', config);
             setTasks(sortTasks(res.data)); // <-- Sort here
         } catch (error) {
             console.error("Error fetching tasks:", error.response?.data || error.message);
@@ -93,7 +93,7 @@ export default function Dashboard() {
                 headers: {Authorization: `Bearer ${token}`}
             };
 
-            await axios.delete(`http://localhost:4000/task/${selectedTaskId}`, config);
+            await axios.delete(`http://localhost:5000/task/${selectedTaskId}`, config);
             setDeletedTask(taskToDelete);
             setTasks(prev => prev.filter(task => task._id !== selectedTaskId));
             setSnackbarOpen(true);
@@ -115,7 +115,7 @@ export default function Dashboard() {
                     headers: {Authorization: `Bearer ${token}`}
                 };
 
-                await axios.post('http://localhost:4000/task', deletedTask, config);
+                await axios.post('http://localhost:5000/task', deletedTask, config);
                 fetchTasks(); // Will re-sort
             } catch (error) {
                 console.error('Error restoring task:', error.response?.data || error.message);
@@ -195,7 +195,7 @@ export default function Dashboard() {
                     </div>) : (<div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                         {tasks.length > 0 ? (tasks.map((task) => (
                                 <Card key={task._id} sx={{backgroundColor: '#f5f5f5', cursor: 'pointer'}}
-                                      className="w-full">
+                                      className="w-full" onClick={() => navigate('/crud', {state: {task}})}>
                                     <CardContent>
                                         <Typography variant="h6">Title: {task.title}</Typography>
                                         <Typography sx={{mb: 1.5}} color="text.secondary">

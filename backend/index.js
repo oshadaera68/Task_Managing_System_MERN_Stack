@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 5000;
 const cors = require("cors");
 
 mongoose.connect(process.env.MONGO_URL, {
@@ -28,14 +28,11 @@ const corsOptions = {
             callback(new Error("Not allowed by CORS"));
         }
     },
+    credentials: true // ✅ allow cookies/auth headers
 };
 
 app.use(express.json());
 app.use(cors(corsOptions));
-app.use(cors({
-    origin: "https://your-frontend-name.vercel.app",
-    credentials: true // if you use cookies or auth headers
-}));
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

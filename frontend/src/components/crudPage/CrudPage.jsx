@@ -84,10 +84,10 @@ export default function CrudPage() {
             };
 
             if (editingTask) {
-                await axios.put(`http://localhost:4000/task/${editingTask._id}`, taskData, config);
+                await axios.put(`http://localhost:5000/task/${editingTask._id}`, taskData, config);
                 setSnackbarMessage("Task updated successfully!");
             } else {
-                await axios.post("http://localhost:4000/task", taskData, config);
+                await axios.post("http://localhost:5000/task", taskData, config);
                 setSnackbarMessage("Task added successfully!");
             }
 
