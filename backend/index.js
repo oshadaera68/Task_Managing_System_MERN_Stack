@@ -4,7 +4,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 4000; // Changed from 3000 to 4000
+const port = process.env.PORT || 4000;
 const cors = require("cors");
 
 mongoose.connect(process.env.MONGO_URL, {
@@ -20,7 +20,6 @@ const signIn = require("./Routes/signin");
 const signUp = require("./Routes/signup");
 
 const allowedOrigins = ["http://localhost:3000", "http://localhost:3001"];
-
 const corsOptions = {
     origin: (origin, callback) => {
         if (allowedOrigins.includes(origin) || !origin) {
@@ -31,7 +30,6 @@ const corsOptions = {
     },
 };
 
-// Middleware
 app.use(express.json());
 app.use(cors(corsOptions));
 
@@ -46,6 +44,11 @@ app.use("/task", task);
 app.use("/signin", signIn);
 app.use("/signup", signUp);
 
-app.listen(port, () => {
-    console.log(`Task application listening on port ${port}`);
-});
+// Start server only if not in test mode
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port, () => {
+        console.log(`Task application listening on port ${port}`);
+    });
+}
+
+module.exports = app; // <- ✅ Export app for Supertest
