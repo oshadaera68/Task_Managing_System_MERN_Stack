@@ -1,23 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import {
-    Alert,
-    Button,
-    Container,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
-    Snackbar,
-    TextField
-} from "@mui/material";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import React, {useEffect, useState} from 'react';
+import {Alert, Button, Container, FormControl, InputLabel, MenuItem, Select, Snackbar, TextField} from "@mui/material";
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import axios from "axios";
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // <--- Added
+import {Link, useLocation, useNavigate} from 'react-router-dom';
+import {jwtDecode} from 'jwt-decode';
 
 export default function CrudPage() {
     const location = useLocation();
@@ -25,11 +15,7 @@ export default function CrudPage() {
     const editingTask = location.state?.task || null;
 
     const [formData, setFormData] = useState({
-        title: '',
-        description: '',
-        priority: '',
-        status: '',
-        createdBy: ''
+        title: '', description: '', priority: '', status: '', createdBy: ''
     });
 
     const [value, setValue] = useState(dayjs());
@@ -49,14 +35,12 @@ export default function CrudPage() {
             });
             setValue(dayjs(editingTask.dueDate));
         } else {
-            // Decode token and set createdBy
             const token = localStorage.getItem("token");
             if (token) {
                 try {
                     const decoded = jwtDecode(token);
                     setFormData(prev => ({
-                        ...prev,
-                        createdBy: decoded.id // or decoded.email, if you prefer
+                        ...prev, createdBy: decoded.id
                     }));
                 } catch (err) {
                     console.error("Failed to decode token", err);
@@ -66,10 +50,9 @@ export default function CrudPage() {
     }, [editingTask]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setFormData((prev) => ({
-            ...prev,
-            [name]: value
+            ...prev, [name]: value
         }));
     };
 
@@ -91,8 +74,7 @@ export default function CrudPage() {
 
         try {
             const taskData = {
-                ...formData,
-                dueDate: value.format("YYYY-MM-DD")
+                ...formData, dueDate: value.format("YYYY-MM-DD")
             };
 
             const config = {
@@ -113,11 +95,7 @@ export default function CrudPage() {
             setOpen(true);
 
             setFormData({
-                title: '',
-                description: '',
-                priority: '',
-                status: '',
-                createdBy: ''
+                title: '', description: '', priority: '', status: '', createdBy: ''
             });
             setValue(dayjs());
             setErrors({});
@@ -139,16 +117,16 @@ export default function CrudPage() {
         setOpen(false);
     };
 
-    return (
-        <div className="absolute w-full h-full bg-blue-700 bg-no-repeat bg-cover flex items-center justify-center">
+    return (<div className="min-h-screen bg-blue-700 bg-no-repeat bg-cover flex items-center justify-center px-4">
             <Link to='/dashboard'>
-                <ArrowBackIosIcon className="absolute top-6 left-6" style={{ color: "white" }} />
+                <ArrowBackIosIcon className="absolute top-6 left-6 text-white"/>
             </Link>
+
             <Container
-                maxWidth="sm"
-                className="bg-white bg-opacity-85 rounded-lg p-8 text-center w-[670px] h-[640px]"
+                maxWidth="md"
+                className="bg-white bg-opacity-90 rounded-lg p-6 md:p-10 shadow-xl w-full max-w-2xl"
             >
-                <h1 className="mb-4 text-center" style={{ fontSize: "30px", fontFamily: "Poppins" }}>
+                <h1 className="mb-6 text-center text-2xl md:text-3xl font-semibold font-poppins text-gray-800">
                     Task Manager - {editingTask ? 'Edit Task' : 'New Task'}
                 </h1>
 
@@ -157,13 +135,13 @@ export default function CrudPage() {
                         onClose={handleClose}
                         severity={snackbarSeverity}
                         variant="filled"
-                        sx={{ width: '100%'}}
+                        sx={{width: '100%'}}
                     >
                         {snackbarMessage}
                     </Alert>
                 </Snackbar>
 
-                <form onSubmit={handleSubmit} className="flex flex-col items-center gap-5">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     <TextField
                         required
                         id="title"
@@ -171,7 +149,7 @@ export default function CrudPage() {
                         name="title"
                         value={formData.title}
                         onChange={handleChange}
-                        className="w-1/2"
+                        fullWidth
                         error={!!errors.title}
                         helperText={errors.title}
                     />
@@ -183,12 +161,12 @@ export default function CrudPage() {
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
-                        className="w-1/2"
+                        fullWidth
                         error={!!errors.description}
                         helperText={errors.description}
                     />
 
-                    <FormControl className="w-1/2">
+                    <FormControl fullWidth error={!!errors.priority}>
                         <InputLabel id="priority-label">Priority</InputLabel>
                         <Select
                             labelId="priority-label"
@@ -197,7 +175,6 @@ export default function CrudPage() {
                             value={formData.priority}
                             onChange={handleChange}
                             variant="outlined"
-                            error={!!errors.priority}
                         >
                             <MenuItem value=""><em>None</em></MenuItem>
                             <MenuItem value="Low">Low</MenuItem>
@@ -207,7 +184,7 @@ export default function CrudPage() {
                         {errors.priority && <p className="text-red-500 text-sm">{errors.priority}</p>}
                     </FormControl>
 
-                    <FormControl className="w-1/2">
+                    <FormControl fullWidth error={!!errors.status}>
                         <InputLabel id="status-label">Status</InputLabel>
                         <Select
                             labelId="status-label"
@@ -215,13 +192,11 @@ export default function CrudPage() {
                             name="status"
                             value={formData.status}
                             onChange={handleChange}
-                            variant="outlined"
-                            error={!!errors.status}
-                        >
+                            variant="outlined">
                             <MenuItem value=""><em>None</em></MenuItem>
-                            <MenuItem value="Pending">Pending</MenuItem>
-                            <MenuItem value="In Progress">In Progress</MenuItem>
-                            <MenuItem value="Completed">Completed</MenuItem>
+                            <MenuItem value="Pending">Pending 🔴</MenuItem>
+                            <MenuItem value="In Progress">In Progress 🟡</MenuItem>
+                            <MenuItem value="Completed">Completed 🟢</MenuItem>
                         </Select>
                         {errors.status && <p className="text-red-500 text-sm">{errors.status}</p>}
                     </FormControl>
@@ -231,10 +206,13 @@ export default function CrudPage() {
                             label="Due Date"
                             value={value}
                             onChange={(newValue) => setValue(newValue)}
-                            className="w-1/2"
+                            slotProps={{
+                                textField: {
+                                    fullWidth: true, error: !!errors.dueDate, helperText: errors.dueDate
+                                }
+                            }}
                         />
                     </LocalizationProvider>
-                    {errors.dueDate && <p className="text-red-500 text-sm">{errors.dueDate}</p>}
 
                     <TextField
                         required
@@ -242,17 +220,21 @@ export default function CrudPage() {
                         label="Created By"
                         name="createdBy"
                         value={formData.createdBy}
-                        InputProps={{ readOnly: true }}  // Set readOnly to true
-                        className="w-1/2"
+                        InputProps={{readOnly: true}}
+                        fullWidth
                         error={!!errors.createdBy}
                         helperText={errors.createdBy}
                     />
 
-                    <Button type="submit" variant="contained" color="success" className="w-1/4">
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="success"
+                        className="w-full md:w-1/3 mx-auto justify-center"
+                    >
                         {editingTask ? 'Update' : 'Add'} Task
                     </Button>
                 </form>
             </Container>
-        </div>
-    );
+        </div>);
 }

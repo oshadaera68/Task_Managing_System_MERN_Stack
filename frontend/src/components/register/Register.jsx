@@ -18,7 +18,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function Register() {
-  // UseStates
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -36,24 +35,17 @@ export default function Register() {
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
-  const handleMouseUpPassword = (event) => {
-    event.preventDefault();
-  };
+  const handleMouseDownPassword = (event) => event.preventDefault();
+  const handleMouseUpPassword = (event) => event.preventDefault();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Trim and normalize data
     const name = formData.name.trim();
     const email = formData.email.trim().toLowerCase();
     const password = formData.password;
     const role = formData.role.trim().toLowerCase();
 
-    // Validate inputs
     if (!name || !email || !password || !role) {
       setShowSnackbar({ open: true, message: "Please fill in all the fields" });
       return;
@@ -74,16 +66,12 @@ export default function Register() {
 
     try {
       const response = await axios.post("http://localhost:4000/signup", {
-        name,
-        email,
-        password,
-        role,
+        name, email, password, role,
       });
+      console.log(response.data)
 
-      console.log("Signup successful!", response.data);
       setShowSnackbar({ open: true, message: "Signup successful!" });
 
-      // Redirect to login after 2 seconds
       setTimeout(() => {
         window.location.href = "/login";
       }, 2000);
@@ -102,47 +90,41 @@ export default function Register() {
 
   return (
       <div
-          className="flex items-center justify-center min-h-screen bg-black bg-no-repeat bg-cover bg-opacity-90"
+          className="flex items-center justify-center min-h-screen bg-black/70 bg-no-repeat bg-cover px-4"
           style={{ backgroundImage: `url(${wallpaper})` }}
       >
         <Container
             maxWidth="sm"
-            className="bg-white rounded-lg bg-opacity-90 w-[900px] h-[500px]"
-            style={{ alignItems: "center" }}
+            className="bg-white rounded-xl bg-opacity-90 w-full max-w-md p-6 sm:p-10 shadow-lg"
         >
-          <h1
-              className="relative mb-3.5 text-center"
-              style={{ fontSize: "34px", fontFamily: "Poppins", top: "5px" }}
-          >
+          <h1 className="text-xl sm:text-3xl font-semibold text-center mb-6 font-[Poppins]">
             Sign Up
           </h1>
-          <form onSubmit={handleSubmit} className="flex flex-col items-center">
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 items-center">
             <TextField
                 required
-                autoFocus
                 id="name"
                 label="Name"
                 name="name"
-                className="w-1/2 mb-3"
+                className="w-full max-w-sm"
                 value={formData.name}
                 onChange={handleChange}
             />
-            <br />
+
             <TextField
                 required
                 id="email"
                 label="Email"
                 name="email"
                 autoComplete="email"
-                className="w-1/2 mb-3"
+                className="w-full max-w-sm"
                 value={formData.email}
                 onChange={handleChange}
             />
-            <br />
-            <FormControl variant="outlined" className="w-1/2 mb-3">
-              <InputLabel htmlFor="outlined-adornment-password">
-                Password *
-              </InputLabel>
+
+            <FormControl variant="outlined" className="w-full max-w-sm">
+              <InputLabel htmlFor="outlined-adornment-password">Password *</InputLabel>
               <OutlinedInput
                   id="password"
                   name="password"
@@ -153,7 +135,6 @@ export default function Register() {
                   endAdornment={
                     <InputAdornment position="end">
                       <IconButton
-                          aria-label={showPassword ? "hide the password" : "show the password"}
                           onClick={handleClickShowPassword}
                           onMouseDown={handleMouseDownPassword}
                           onMouseUp={handleMouseUpPassword}
@@ -166,36 +147,38 @@ export default function Register() {
                   label="Password"
               />
             </FormControl>
-            <br />
+
             <TextField
                 required
                 id="role"
                 label="Role"
                 name="role"
-                className="w-1/2 mb-3"
+                className="w-full max-w-sm"
                 value={formData.role}
                 onChange={handleChange}
             />
-            <br />
-            <Button type="submit" variant="contained" className="mt-2" sx={{ py: 1 }} disabled={loading}>
-              {loading ? "Signing up..." : "Sign up"}
+
+            <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                className="w-1/2 max-w-sm"
+                disabled={loading}
+            >
+              {loading ? "Signing up..." : "Sign Up"}
             </Button>
           </form>
-          <br />
-          <Typography
-              variant="body2"
-              align="center"
-              className="mt-2"
-              style={{ fontFamily: "Roboto", top: "7vh" }}
-          >
-            Already have an Account?
-            <br />
-            <Link to="/login" className="text-primary" style={{ color: "blue" }}>
-              {" "}
+
+          <br/>
+          <Typography variant="body2" align="center" className="mt-4 font-roboto">
+            Already have an account?{" "}
+            <br/>
+            <Link to="/login" className="text-blue-600">
               Sign In
             </Link>
           </Typography>
         </Container>
+
         <Snackbar
             open={showSnackbar.open}
             autoHideDuration={4000}

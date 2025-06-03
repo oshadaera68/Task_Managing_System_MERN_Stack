@@ -12,13 +12,13 @@ export default function NotFoundPage() {
       </div>
 
       <div className="flex items-center justify-center">
-        <h1 className="text-5xl font-bold">Oops! Page is Not Found !!</h1>
+        <h1 className="text-4xl font-bold">Oops! Page is Not Found !!</h1>
       </div>
 
       <div className="static flex items-center justify-center top-8 right-8">
         <Link to="/">
           <Button variant="contained" size="medium" className="absolute top-6">
-            Back to Dashboard
+            Back to Login
           </Button>
         </Link>
       </div>
