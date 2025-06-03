@@ -10,7 +10,7 @@ import {
   Typography,
   Snackbar,
   FormControl,
-  IconButton,
+  IconButton, Select, MenuItem,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -32,6 +32,7 @@ export default function Register() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -148,15 +149,33 @@ export default function Register() {
               />
             </FormControl>
 
-            <TextField
-                required
-                id="role"
-                label="Role"
-                name="role"
-                className="w-full max-w-sm"
-                value={formData.role}
-                onChange={handleChange}
-            />
+            {/*<TextField*/}
+            {/*    required*/}
+            {/*    id="role"*/}
+            {/*    label="Role"*/}
+            {/*    name="role"*/}
+            {/*    className="w-full max-w-sm"*/}
+            {/*    value={formData.role}*/}
+            {/*    onChange={handleChange}*/}
+            {/*/>*/}
+
+            <FormControl error={!!errors.role} className="w-full max-w-sm">
+              <InputLabel id="role-label">Role</InputLabel>
+              <Select
+                  labelId="role-label"
+                  id="role"
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  variant="outlined"
+
+              >
+                <MenuItem value=""><em>None</em></MenuItem>
+                <MenuItem value="User">User</MenuItem>
+                <MenuItem value="Admin">Admin</MenuItem>
+              </Select>
+              {errors.status && <p className="text-red-500 text-sm">{errors.status}</p>}
+            </FormControl>
 
             <Button
                 type="submit"

@@ -10,7 +10,7 @@ const signUpSchema = new mongoose.Schema({
     name: { type: String, required: false }, // optional, if you want to store names
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, required: false, default: 'user' }
+    role: { type: String, required: false,  enum: ['User', 'Admin'], }
 });
 
 // Pre-save hook to hash password automatically before saving
