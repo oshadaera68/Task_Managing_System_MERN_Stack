@@ -84,10 +84,10 @@ export default function CrudPage() {
             };
 
             if (editingTask) {
-                await axios.put(`http://localhost:5000/api/task/${editingTask._id}`, taskData, config);
+                await axios.put(`http://localhost:4000/task/${editingTask._id}`, taskData, config);
                 setSnackbarMessage("Task updated successfully!");
             } else {
-                await axios.post(`http://localhost:5000/api/task`, taskData, config);
+                await axios.post("http://localhost:4000/task", taskData, config);
                 setSnackbarMessage("Task added successfully!");
             }
 
@@ -118,123 +118,123 @@ export default function CrudPage() {
     };
 
     return (<div className="min-h-screen bg-blue-700 bg-no-repeat bg-cover flex items-center justify-center px-4">
-            <Link to='/dashboard'>
-                <ArrowBackIosIcon className="absolute top-6 left-6 text-white"/>
-            </Link>
+        <Link to='/dashboard'>
+            <ArrowBackIosIcon className="absolute top-6 left-6 text-white"/>
+        </Link>
 
-            <Container
-                maxWidth="md"
-                className="bg-white bg-opacity-90 rounded-lg p-6 md:p-10 shadow-xl w-full max-w-2xl"
-            >
-                <h1 className="mb-6 text-center text-2xl md:text-3xl font-semibold font-poppins text-gray-800">
-                    Task Manager - {editingTask ? 'Edit Task' : 'New Task'}
-                </h1>
+        <Container
+            maxWidth="md"
+            className="bg-white bg-opacity-90 rounded-lg p-6 md:p-10 shadow-xl w-full max-w-2xl"
+        >
+            <h1 className="mb-6 text-center text-2xl md:text-3xl font-semibold font-poppins text-gray-800">
+                Task Manager - {editingTask ? 'Edit Task' : 'New Task'}
+            </h1>
 
-                <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
-                    <Alert
-                        onClose={handleClose}
-                        severity={snackbarSeverity}
-                        variant="filled"
-                        sx={{width: '100%'}}
-                    >
-                        {snackbarMessage}
-                    </Alert>
-                </Snackbar>
+            <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
+                <Alert
+                    onClose={handleClose}
+                    severity={snackbarSeverity}
+                    variant="filled"
+                    sx={{width: '100%'}}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-                    <TextField
-                        required
-                        id="title"
-                        label="Title"
-                        name="title"
-                        value={formData.title}
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                <TextField
+                    required
+                    id="title"
+                    label="Title"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    fullWidth
+                    error={!!errors.title}
+                    helperText={errors.title}
+                />
+
+                <TextField
+                    required
+                    id="description"
+                    label="Description"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    fullWidth
+                    error={!!errors.description}
+                    helperText={errors.description}
+                />
+
+                <FormControl fullWidth error={!!errors.priority}>
+                    <InputLabel id="priority-label">Priority</InputLabel>
+                    <Select
+                        labelId="priority-label"
+                        id="priority"
+                        name="priority"
+                        value={formData.priority}
                         onChange={handleChange}
-                        fullWidth
-                        error={!!errors.title}
-                        helperText={errors.title}
-                    />
-
-                    <TextField
-                        required
-                        id="description"
-                        label="Description"
-                        name="description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        fullWidth
-                        error={!!errors.description}
-                        helperText={errors.description}
-                    />
-
-                    <FormControl fullWidth error={!!errors.priority}>
-                        <InputLabel id="priority-label">Priority</InputLabel>
-                        <Select
-                            labelId="priority-label"
-                            id="priority"
-                            name="priority"
-                            value={formData.priority}
-                            onChange={handleChange}
-                            variant="outlined"
-                        >
-                            <MenuItem value=""><em>None</em></MenuItem>
-                            <MenuItem value="Low">Low</MenuItem>
-                            <MenuItem value="Medium">Medium</MenuItem>
-                            <MenuItem value="High">High</MenuItem>
-                        </Select>
-                        {errors.priority && <p className="text-red-500 text-sm">{errors.priority}</p>}
-                    </FormControl>
-
-                    <FormControl fullWidth error={!!errors.status}>
-                        <InputLabel id="status-label">Status</InputLabel>
-                        <Select
-                            labelId="status-label"
-                            id="status"
-                            name="status"
-                            value={formData.status}
-                            onChange={handleChange}
-                            variant="outlined">
-                            <MenuItem value=""><em>None</em></MenuItem>
-                            <MenuItem value="Pending">Pending 🔴</MenuItem>
-                            <MenuItem value="In Progress">In Progress 🟡</MenuItem>
-                            <MenuItem value="Completed">Completed 🟢</MenuItem>
-                        </Select>
-                        {errors.status && <p className="text-red-500 text-sm">{errors.status}</p>}
-                    </FormControl>
-
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker
-                            label="Due Date"
-                            value={value}
-                            onChange={(newValue) => setValue(newValue)}
-                            slotProps={{
-                                textField: {
-                                    fullWidth: true, error: !!errors.dueDate, helperText: errors.dueDate
-                                }
-                            }}
-                        />
-                    </LocalizationProvider>
-
-                    <TextField
-                        required
-                        id="createdBy"
-                        label="Created By"
-                        name="createdBy"
-                        value={formData.createdBy}
-                        InputProps={{readOnly: true}}
-                        fullWidth
-                        error={!!errors.createdBy}
-                        helperText={errors.createdBy}
-                    />
-
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="success"
-                        className="w-full md:w-1/3 mx-auto justify-center"
+                        variant="outlined"
                     >
-                        {editingTask ? 'Update' : 'Add'} Task
-                    </Button>
-                </form>
-            </Container>
-        </div>);
+                        <MenuItem value=""><em>None</em></MenuItem>
+                        <MenuItem value="Low">Low</MenuItem>
+                        <MenuItem value="Medium">Medium</MenuItem>
+                        <MenuItem value="High">High</MenuItem>
+                    </Select>
+                    {errors.priority && <p className="text-red-500 text-sm">{errors.priority}</p>}
+                </FormControl>
+
+                <FormControl fullWidth error={!!errors.status}>
+                    <InputLabel id="status-label">Status</InputLabel>
+                    <Select
+                        labelId="status-label"
+                        id="status"
+                        name="status"
+                        value={formData.status}
+                        onChange={handleChange}
+                        variant="outlined">
+                        <MenuItem value=""><em>None</em></MenuItem>
+                        <MenuItem value="Pending">Pending 🔴</MenuItem>
+                        <MenuItem value="In Progress">In Progress 🟡</MenuItem>
+                        <MenuItem value="Completed">Completed 🟢</MenuItem>
+                    </Select>
+                    {errors.status && <p className="text-red-500 text-sm">{errors.status}</p>}
+                </FormControl>
+
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                        label="Due Date"
+                        value={value}
+                        onChange={(newValue) => setValue(newValue)}
+                        slotProps={{
+                            textField: {
+                                fullWidth: true, error: !!errors.dueDate, helperText: errors.dueDate
+                            }
+                        }}
+                    />
+                </LocalizationProvider>
+
+                <TextField
+                    required
+                    id="createdBy"
+                    label="Created By"
+                    name="createdBy"
+                    value={formData.createdBy}
+                    InputProps={{readOnly: true}}
+                    fullWidth
+                    error={!!errors.createdBy}
+                    helperText={errors.createdBy}
+                />
+
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="success"
+                    className="w-full md:w-1/3 mx-auto justify-center"
+                >
+                    {editingTask ? 'Update' : 'Add'} Task
+                </Button>
+            </form>
+        </Container>
+    </div>);
 }

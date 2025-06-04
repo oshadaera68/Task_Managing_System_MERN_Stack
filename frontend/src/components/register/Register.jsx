@@ -10,7 +10,7 @@ import {
   Typography,
   Snackbar,
   FormControl,
-  IconButton, Select, MenuItem,
+  IconButton,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -32,7 +32,6 @@ export default function Register() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors] = useState({});
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -66,7 +65,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:5000/api/register", {
+      const response = await axios.post("http://localhost:4000/signup", {
         name, email, password, role,
       });
       console.log(response.data)
@@ -149,23 +148,15 @@ export default function Register() {
               />
             </FormControl>
 
-            <FormControl error={!!errors.role} className="w-full max-w-sm">
-              <InputLabel id="role-label">Role</InputLabel>
-              <Select
-                  labelId="role-label"
-                  id="role"
-                  name="role"
-                  value={formData.role}
-                  onChange={handleChange}
-                  variant="outlined"
-
-              >
-                <MenuItem value=""><em>None</em></MenuItem>
-                <MenuItem value="User">User</MenuItem>
-                <MenuItem value="Admin">Admin</MenuItem>
-              </Select>
-              {errors.status && <p className="text-red-500 text-sm">{errors.status}</p>}
-            </FormControl>
+            <TextField
+                required
+                id="role"
+                label="Role"
+                name="role"
+                className="w-full max-w-sm"
+                value={formData.role}
+                onChange={handleChange}
+            />
 
             <Button
                 type="submit"
