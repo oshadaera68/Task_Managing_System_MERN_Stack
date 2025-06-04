@@ -230,7 +230,7 @@ export default function CrudPage() {
                     type="submit"
                     variant="contained"
                     color="success"
-                    className="w-full md:w-1/3 mx-auto justify-center"
+                    className="w-full md:w-1/4 mx-auto justify-center"
                 >
                     {editingTask ? 'Update' : 'Add'} Task
                 </Button>
