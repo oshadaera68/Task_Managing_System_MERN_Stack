@@ -66,7 +66,7 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await axios.post("https://tms-backend-7mx2.onrender.com/api/register", {
+      const response = await axios.post("http://localhost:5000/api/register", {
         name, email, password, role,
       });
       console.log(response.data)
@@ -148,16 +148,6 @@ export default function Register() {
                   label="Password"
               />
             </FormControl>
-
-            {/*<TextField*/}
-            {/*    required*/}
-            {/*    id="role"*/}
-            {/*    label="Role"*/}
-            {/*    name="role"*/}
-            {/*    className="w-full max-w-sm"*/}
-            {/*    value={formData.role}*/}
-            {/*    onChange={handleChange}*/}
-            {/*/>*/}
 
             <FormControl error={!!errors.role} className="w-full max-w-sm">
               <InputLabel id="role-label">Role</InputLabel>

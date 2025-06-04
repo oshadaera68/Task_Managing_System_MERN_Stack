@@ -93,7 +93,7 @@ export default function Dashboard() {
                 headers: {Authorization: `Bearer ${token}`}
             };
 
-            await axios.delete(`https://tms-backend-7mx2.onrender.com/api/task/${selectedTaskId}`, config);
+            await axios.delete(`http://localhost:5000/api/task/${selectedTaskId}`, config);
             setDeletedTask(taskToDelete);
             setTasks(prev => prev.filter(task => task._id !== selectedTaskId));
             setSnackbarOpen(true);
@@ -115,7 +115,7 @@ export default function Dashboard() {
                     headers: {Authorization: `Bearer ${token}`}
                 };
 
-                await axios.post(`https://tms-backend-7mx2.onrender.com/api/task`, deletedTask, config);
+                await axios.post(`http://localhost:5000/api/task`, deletedTask, config);
                 fetchTasks(); // Will re-sort
             } catch (error) {
                 console.error('Error restoring task:', error.response?.data || error.message);
@@ -130,110 +130,110 @@ export default function Dashboard() {
     }, []);
 
     return (<div className="min-h-screen bg-blue-300 bg-cover bg-no-repeat">
-            <Box sx={{flexGrow: 1}} className="bg-black">
-                <AppBar position="static">
-                    <Toolbar>
-                        <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
-                            Task Manager
-                        </Typography>
-                        <Link to="/register"><Button color="inherit">Register</Button></Link>
-                        <Button color="inherit" onClick={handleLogoutDialogOpen}>Logout</Button>
-                    </Toolbar>
-                </AppBar>
-            </Box>
-
-            <div className="p-4 md:p-6">
-                <h1 className="text-3xl md:text-4xl text-center font-semibold font-poppins mb-6">
-                    Dashboard
-                </h1>
-
-                <div className="flex justify-between items-center mb-4">
-                    <Typography variant="h6" className="font-sans text-black">
-                        Your Tasks:
+        <Box sx={{flexGrow: 1}} className="bg-black">
+            <AppBar position="static">
+                <Toolbar>
+                    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+                        Task Manager
                     </Typography>
+                    <Link to="/register"><Button color="inherit">Register</Button></Link>
+                    <Button color="inherit" onClick={handleLogoutDialogOpen}>Logout</Button>
+                </Toolbar>
+            </AppBar>
+        </Box>
 
-                    <Link to='/crud'>
-                        <Button variant="contained" color="secondary" className="!p-2">
-                            <AddIcon/>
-                        </Button>
-                    </Link>
-                </div>
+        <div className="p-4 md:p-6">
+            <h1 className="text-3xl md:text-4xl text-center font-semibold font-poppins mb-6">
+                Dashboard
+            </h1>
 
-                {/* Delete Task Dialog */}
-                <Dialog open={open} onClose={handleClose}>
-                    <DialogTitle>Are you sure you want to delete this task?</DialogTitle>
-                    <DialogActions>
-                        <Button onClick={handleClose}>No</Button>
-                        <Button onClick={deleteTask} color="error" autoFocus>Yes</Button>
-                    </DialogActions>
-                </Dialog>
+            <div className="flex justify-between items-center mb-4">
+                <Typography variant="h6" className="font-sans text-black">
+                    Your Tasks:
+                </Typography>
 
-                {/* Logout Dialog */}
-                <Dialog open={logoutDialogOpen} onClose={handleLogoutDialogClose}>
-                    <DialogTitle>Do you really want to logout?</DialogTitle>
-                    <DialogActions>
-                        <Button onClick={handleLogoutDialogClose}>Cancel</Button>
-                        <Button onClick={confirmLogout} color="error" autoFocus>Logout</Button>
-                    </DialogActions>
-                </Dialog>
-
-                {/* Snackbar */}
-                <Snackbar
-                    open={snackbarOpen}
-                    autoHideDuration={5000}
-                    onClose={handleSnackbarClose}
-                    anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-                    message="Task deleted"
-                    action={<Button color="secondary" size="small" onClick={undoDelete}>
-                        UNDO
-                    </Button>}
-                />
-
-                {/* Loading or Tasks */}
-                {isLoading ? (<div className="flex justify-center mt-10">
-                        <CircularProgress/>
-                    </div>) : (<div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                        {tasks.length > 0 ? (tasks.map((task) => (
-                                <Card key={task._id} sx={{backgroundColor: '#f5f5f5', cursor: 'pointer'}}
-                                      className="w-full" onClick={() => navigate('/crud', {state: {task}})}>
-                                    <CardContent>
-                                        <Typography variant="h6">Title: {task.title}</Typography>
-                                        <Typography sx={{mb: 1.5}} color="text.secondary">
-                                            Description: {task.description}
-                                        </Typography>
-                                        <Typography variant="body2" sx={{mb: 1}}>
-                                            Status: {task.status}
-                                        </Typography>
-                                        <Typography variant="body2" sx={{mb: 1}}>
-                                            Priority: {task.priority}
-                                        </Typography>
-                                        <Typography variant="body2" sx={{mb: 1}}>
-                                            Due Date: {task.dueDate}
-                                        </Typography>
-
-                                        <Box sx={{display: 'flex', gap: 1, mt: 2}}>
-                                            <Link to="/crud" state={{task}}>
-                                                <Tooltip title="Edit Task">
-                                                    <IconButton color="warning" size="small">
-                                                        <EditIcon/>
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </Link>
-                                            <Tooltip title="Delete Task">
-                                                <IconButton
-                                                    color="error"
-                                                    size="small"
-                                                    onClick={() => handleClickOpen(task._id)}
-                                                >
-                                                    <DeleteIcon/>
-                                                </IconButton>
-                                            </Tooltip>
-                                        </Box>
-                                    </CardContent>
-                                </Card>))) : (<Typography sx={{color: 'black', marginTop: 2}}>
-                                No tasks available.
-                            </Typography>)}
-                    </div>)}
+                <Link to='/crud'>
+                    <Button variant="contained" color="secondary" className="!p-2">
+                        <AddIcon/>
+                    </Button>
+                </Link>
             </div>
-        </div>);
+
+            {/* Delete Task Dialog */}
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Are you sure you want to delete this task?</DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleClose}>No</Button>
+                    <Button onClick={deleteTask} color="error" autoFocus>Yes</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Logout Dialog */}
+            <Dialog open={logoutDialogOpen} onClose={handleLogoutDialogClose}>
+                <DialogTitle>Do you really want to logout?</DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleLogoutDialogClose}>Cancel</Button>
+                    <Button onClick={confirmLogout} color="error" autoFocus>Logout</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Snackbar */}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={5000}
+                onClose={handleSnackbarClose}
+                anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
+                message="Task deleted"
+                action={<Button color="secondary" size="small" onClick={undoDelete}>
+                    UNDO
+                </Button>}
+            />
+
+            {/* Loading or Tasks */}
+            {isLoading ? (<div className="flex justify-center mt-10">
+                <CircularProgress/>
+            </div>) : (<div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                {tasks.length > 0 ? (tasks.map((task) => (
+                    <Card key={task._id} sx={{backgroundColor: '#f5f5f5', cursor: 'pointer'}}
+                          className="w-full" onClick={() => navigate('/crud', {state: {task}})}>
+                        <CardContent>
+                            <Typography variant="h6">Title: {task.title}</Typography>
+                            <Typography sx={{mb: 1.5}} color="text.secondary">
+                                Description: {task.description}
+                            </Typography>
+                            <Typography variant="body2" sx={{mb: 1}}>
+                                Status: {task.status}
+                            </Typography>
+                            <Typography variant="body2" sx={{mb: 1}}>
+                                Priority: {task.priority}
+                            </Typography>
+                            <Typography variant="body2" sx={{mb: 1}}>
+                                Due Date: {task.dueDate}
+                            </Typography>
+
+                            <Box sx={{display: 'flex', gap: 1, mt: 2}}>
+                                <Link to="/crud" state={{task}}>
+                                    <Tooltip title="Edit Task">
+                                        <IconButton color="warning" size="small">
+                                            <EditIcon/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </Link>
+                                <Tooltip title="Delete Task">
+                                    <IconButton
+                                        color="error"
+                                        size="small"
+                                        onClick={() => handleClickOpen(task._id)}
+                                    >
+                                        <DeleteIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
+                        </CardContent>
+                    </Card>))) : (<Typography sx={{color: 'black', marginTop: 2}}>
+                    No tasks available.
+                </Typography>)}
+            </div>)}
+        </div>
+    </div>);
 }
