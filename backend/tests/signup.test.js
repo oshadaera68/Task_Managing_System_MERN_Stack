@@ -1,8 +1,3 @@
-/**
- *Coded By: Era Boy
- *Version: v0.1.0
- **/
-
 const request = require('supertest');
 const mongoose = require('mongoose');
 const app = require('../index'); // Your express app
@@ -11,7 +6,7 @@ const SignUp = require('../model/signup.model');
 describe('POST /signup', () => {
     beforeAll(async () => {
         if (mongoose.connection.readyState === 0) {
-            await mongoose.connect(process.env.MONGO_URI, {
+            await mongoose.connect(process.env.MONGO_URL, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true,
             });
