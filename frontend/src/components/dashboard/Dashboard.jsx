@@ -23,7 +23,7 @@ import axios from 'axios';
 
 // Utility: Sort by priority then due date
 const sortTasks = (tasks) => {
-    const priorityOrder = {Low: 1, Medium: 2, High: 3};
+    const priorityOrder = {High: 1, Medium: 2, Low: 3};
     return [...tasks].sort((a, b) => {
         const priorityA = priorityOrder[a.priority] || 4;
         const priorityB = priorityOrder[b.priority] || 4;
