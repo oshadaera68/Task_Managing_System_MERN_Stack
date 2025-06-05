@@ -4,11 +4,9 @@ FROM node:22-alpine
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Temporary debug step to list files
-RUN ls -al && cat package.json
+# Copy dependency files explicitly
+COPY package.json ./
+COPY package-lock.json ./
 
 # Install dependencies
 RUN npm install
